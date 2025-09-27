@@ -1,4 +1,4 @@
-package quantum_code.petsaber.domain;
+package quantum_code.petsaber.enuns;
 
 public enum Role {
     CONSULTOR,

@@ -1,4 +1,13 @@
 package quantum_code.petsaber.domain;
 
-public class Usuario {
+import quantum_code.petsaber.enuns.Role;
+
+public interface Usuario {
+    Long getId();
+
+    String getEmail();
+
+    String getSenha();
+
+    Role getRole();
 }
