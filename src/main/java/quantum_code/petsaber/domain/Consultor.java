@@ -16,9 +16,10 @@ import quantum_code.petsaber.enuns.Role;
 public class Consultor implements Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idConsultor;
     private String nome;
+    private String cpf;
     private String email;
     private String senha;
 

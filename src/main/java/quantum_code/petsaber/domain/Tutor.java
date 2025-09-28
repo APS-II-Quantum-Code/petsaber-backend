@@ -16,7 +16,7 @@ import quantum_code.petsaber.enuns.Role;
 public class Tutor implements Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTutor;
     private String nome;
     private String cpf;

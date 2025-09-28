@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import quantum_code.petsaber.dto.LoginRequestDto;
 import quantum_code.petsaber.dto.RegisterRequestDto;
 import quantum_code.petsaber.facade.Facade;
-import quantum_code.petsaber.service.TokenDto;
+import quantum_code.petsaber.dto.TokenDto;
 
 @RestController
 @RequestMapping("/auth")

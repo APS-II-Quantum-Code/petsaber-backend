@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import quantum_code.petsaber.config.auth.CustomUserDetails;
 import quantum_code.petsaber.domain.Consultor;
 import quantum_code.petsaber.domain.Tutor;
-import quantum_code.petsaber.domain.Usuario;
 import quantum_code.petsaber.dto.LoginRequestDto;
 import quantum_code.petsaber.dto.RegisterRequestDto;
+import quantum_code.petsaber.dto.TokenDto;
 import quantum_code.petsaber.enuns.Role;
 import quantum_code.petsaber.repository.ConsultorRepository;
 import quantum_code.petsaber.repository.TutorRepository;
@@ -45,6 +45,7 @@ public class AuthService {
                     .nome(registerRequestDto.getNome())
                     .email(registerRequestDto.getEmail())
                     .senha(passwordEncoder.encode(registerRequestDto.getSenha()))
+                    .cpf(registerRequestDto.getCpf())
                     .build();
 
             tutorRepository.save(tutor);
@@ -54,6 +55,7 @@ public class AuthService {
                     .nome(registerRequestDto.getNome())
                     .email(registerRequestDto.getEmail())
                     .senha(passwordEncoder.encode(registerRequestDto.getSenha()))
+                    .cpf(registerRequestDto.getCpf())
                     .build();
 
             consultorRepository.save(consultor);

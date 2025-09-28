@@ -1,4 +1,4 @@
-package quantum_code.petsaber.service;
+package quantum_code.petsaber.dto;
 
 import lombok.Builder;
 import lombok.Data;
