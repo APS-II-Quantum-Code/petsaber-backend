@@ -1,6 +1,7 @@
 package quantum_code.petsaber.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import quantum_code.petsaber.dto.PetRequestDto;
 import quantum_code.petsaber.dto.PetResponseDto;
@@ -23,5 +24,15 @@ public class TutorController {
     @PostMapping("/novo-pet")
     public void adicionarPet(@RequestBody PetRequestDto petDto){
         facade.adicionarPet(petDto);
+    }
+
+    @PutMapping("/editar-pet/{idPet}")
+    public void editarPet(@PathVariable Long idPet, @RequestBody PetRequestDto petDto){
+        facade.editarPet(idPet, petDto);
+    }
+
+    @DeleteMapping("/deletar-pet/{idPet}")
+    public void deletarPet(@PathVariable Long idPet){
+        facade.deletarPet(idPet);
     }
 }

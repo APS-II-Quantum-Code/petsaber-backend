@@ -2,6 +2,7 @@ package quantum_code.petsaber.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import quantum_code.petsaber.enuns.Sexo;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,6 @@ public class PetResponseDto {
     private String raca;
     private LocalDate dataNascimento;
     private String porte;
-    private String sexo;
+    private Sexo sexo;
     private String urlImagem;
 }

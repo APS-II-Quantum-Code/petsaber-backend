@@ -64,12 +64,31 @@ public class Facade {
         return pets.stream().map(pet -> PetResponseDto.builder()
                         .nome(pet.getNome())
                         .urlImagem(pet.getUrlImagem())
-                        .sexo(pet.getNome())
+                        .sexo(pet.getSexo())
                         .dataNascimento(pet.getDataNascimento())
                         .raca(pet.getRaca().getNome())
                         .especie(pet.getRaca().getEspecie().getNome())
                         .porte(pet.getPorte().getNome())
                         .build())
                 .toList();
+    }
+
+    @Transactional
+    public void editarPet(Long idPet, PetRequestDto petDto) {
+
+        Pet pet = petService.buscarPetPorId(idPet);
+
+        pet.setNome(petDto.getNome());
+        pet.setDataNascimento(petDto.getDataNascimento());
+        pet.setSexo(petDto.getSexo());
+        pet.setRaca(racaService.buscarRacaPorId(petDto.getIdRaca()));
+        pet.setPorte(porteService.buscarPortePorId(petDto.getIdPorte()));
+
+        petService.salvarPet(pet);
+
+    }
+
+    public void deletarPet(Long idPet) {
+        petService.deletarPet(idPet);
     }
 }
