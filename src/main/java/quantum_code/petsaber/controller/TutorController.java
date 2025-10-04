@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tutor")
+@PreAuthorize("hasRole('TUTOR')")
 @RequiredArgsConstructor
 public class TutorController {
 
