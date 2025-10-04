@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import quantum_code.petsaber.config.auth.AuthContext;
-import quantum_code.petsaber.dto.ExercicioResponseDto;
 import quantum_code.petsaber.domain.*;
 import quantum_code.petsaber.dto.*;
+import quantum_code.petsaber.mapper.AlternativaMapper;
+import quantum_code.petsaber.mapper.ExericicioMapper;
+import quantum_code.petsaber.mapper.ModuloMapper;
+import quantum_code.petsaber.mapper.TrilhaMapper;
 import quantum_code.petsaber.service.*;
 
 import java.util.List;
@@ -24,6 +27,11 @@ public class Facade {
     private final ModuloService moduloService;
     private final ExercicioService exercicioService;
     private final AlternativaService alternativaService;
+
+    private final ExericicioMapper exericicioMapper;
+    private final AlternativaMapper alternativaMapper;
+    private final ModuloMapper moduloMapper;
+    private final TrilhaMapper trilhaMapper;
 
     private final AuthContext authContext;
 
@@ -97,100 +105,48 @@ public class Facade {
     @Transactional
     public TrilhaResponseDto criarNovaTrilha(TrilhaRequestDto trilhaRequestDto) {
 
-        Trilha trilha = trilhaService.salvarTrilha(Trilha.builder()
-                .nome(trilhaRequestDto.getNome())
-                .descricao(trilhaRequestDto.getDescricao())
-                .nivel(trilhaRequestDto.getNivel())
-                .raca(racaService.buscarRacaPorId(trilhaRequestDto.getIdRaca()))
-                .build());
+        Trilha trilha = trilhaMapper.toEntity(trilhaRequestDto);
+        trilha.setRaca(racaService.buscarRacaPorId(trilhaRequestDto.getIdRaca()));
 
-        return TrilhaResponseDto.builder()
-                .idTrilha(trilha.getIdTrilha())
-                .nome(trilha.getNome())
-                .descricao(trilha.getDescricao())
-                .nivel(trilha.getNivel().name())
-                .raca(trilha.getRaca().getNome())
-                .build();
+        return trilhaMapper.toDto(trilhaService.salvarTrilha(trilha));
     }
 
     @Transactional
     public ModuloResponseDto criarNovoModulo(Long idTrilha, ModuloRequestDto moduloRequestDto) {
 
-        Modulo modulo = moduloService.salvarModulo(Modulo.builder()
-                .nome(moduloRequestDto.getNome())
-                .descricao(moduloRequestDto.getDescricao())
-                .duracaoHoras(moduloRequestDto.getDuracaoHoras())
-                .conteudo(moduloRequestDto.getConteudo())
-                .trilha(trilhaService.buscarTrilhaPorId(idTrilha))
-                .build());
+        Modulo modulo = moduloMapper.toEntity(moduloRequestDto);
+        modulo.setTrilha(trilhaService.buscarTrilhaPorId(idTrilha));
 
-        return ModuloResponseDto.builder()
-                .idModulo(modulo.getIdModulo())
-                .nome(modulo.getNome())
-                .descricao(modulo.getDescricao())
-                .duracaoHoras(modulo.getDuracaoHoras())
-                .conteudo(modulo.getConteudo())
-                .build();
+        return moduloMapper.toDto(moduloService.salvarModulo(modulo));
     }
 
     @Transactional
     public ExercicioResponseDto criarExercicio(Long idModulo, ExercicioRequestDto exercicioRequestDto) {
 
-        Exercicio exercicio = exercicioService.criarExercicio(Exercicio.builder()
-                .nome(exercicioRequestDto.getNome())
-                .descricao(exercicioRequestDto.getDescricao())
-                .pontuacao(exercicioRequestDto.getPontuacao())
-                .modulo(moduloService.buscarModuloPorId(idModulo))
-                .build());
+        Exercicio exercicio = exericicioMapper.toEntity(exercicioRequestDto);
+        exercicio.setModulo(moduloService.buscarModuloPorId(idModulo));
+        exercicioService.criarExercicio(exercicio);
 
+        exercicio.getAlternativas().forEach(alternativa -> {
+            alternativa.setExercicio(exercicio);
+            alternativaService.salvarAlternativa(alternativa);
+        });
 
-        List<AlternativaResponseDto> alternativas = exercicioRequestDto.getAlternativas().stream().map(alternativa -> {
-             Alternativa response = alternativaService.salvarAlternativa(Alternativa.builder()
-                    .conteudo(alternativa.getConteudo())
-                    .correta(alternativa.getCorreta())
-                    .exercicio(exercicio)
-                    .build());
-
-             return AlternativaResponseDto.builder()
-                     .idAlternativa(response.getIdAlternativa())
-                     .conteudo(response.getConteudo())
-                     .build();
-        }).toList();
-
-        return ExercicioResponseDto.builder()
-                .idExercicio(exercicio.getIdExercicio())
-                .nome(exercicio.getNome())
-                .descricao(exercicio.getDescricao())
-                .alternativas(alternativas)
-                .build();
+        return exericicioMapper.toDto(exercicio);
     }
 
     @Transactional(readOnly = true)
     public List<TrilhaResponseDto> buscarTrilhas() {
-        return trilhaService.buscarTrilhas().stream().map(trilha -> TrilhaResponseDto.builder()
-                .idTrilha(trilha.getIdTrilha())
-                .nome(trilha.getNome())
-                .descricao(trilha.getDescricao())
-                .nivel(trilha.getNivel().name())
-                .raca(trilha.getRaca().getNome())
-                .build()
-        ).toList();
+        return trilhaMapper.toDto(trilhaService.buscarTrilhas());
     }
 
     @Transactional(readOnly = true)
     public List<ModuloResponseDto> buscarModulosPorTrilha(Long idTrilha) {
-        return moduloService.buscarModulosPorIdTrilha(idTrilha).stream().map(modulo -> ModuloResponseDto.builder()
-                .idModulo(modulo.getIdModulo())
-                .nome(modulo.getNome())
-                .descricao(modulo.getDescricao())
-                .duracaoHoras(modulo.getDuracaoHoras())
-                .conteudo(modulo.getConteudo())
-                .build()).toList();
+        return moduloMapper.toDto(moduloService.buscarModulosPorIdTrilha(idTrilha));
     }
 
     @Transactional(readOnly = true)
     public List<ExercicioResponseDto> buscarExerciciosPorIdModulo(Long idModulo) {
-
-        List<Exercicio> exercicio = exercicioService.buscarExerciciosPorIdModulo(idModulo);
+        return exericicioMapper.toDto(exercicioService.buscarExerciciosPorIdModulo(idModulo));
     }
 }
