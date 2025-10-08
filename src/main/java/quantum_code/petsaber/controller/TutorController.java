@@ -1,10 +1,11 @@
 package quantum_code.petsaber.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import quantum_code.petsaber.dto.PetRequestDto;
-import quantum_code.petsaber.dto.PetResponseDto;
+import quantum_code.petsaber.dto.*;
 import quantum_code.petsaber.facade.Facade;
 
 import java.util.List;
@@ -18,22 +19,59 @@ public class TutorController {
     private final Facade facade;
 
     @GetMapping("/buscar-pets")
-    public List<PetResponseDto> buscarPetsPorTutor(){
-            return facade.buscarPetsPorTutor();
+    public List<PetResponseDto> buscarPetsPorTutor() {
+        return facade.buscarPetsPorTutor();
     }
 
     @PostMapping("/novo-pet")
-    public void adicionarPet(@RequestBody PetRequestDto petDto){
+    public void adicionarPet(@RequestBody PetRequestDto petDto) {
         facade.adicionarPet(petDto);
     }
 
     @PutMapping("/editar-pet/{idPet}")
-    public void editarPet(@PathVariable Long idPet, @RequestBody PetRequestDto petDto){
+    public void editarPet(@PathVariable Long idPet, @RequestBody PetRequestDto petDto) {
         facade.editarPet(idPet, petDto);
     }
 
     @DeleteMapping("/deletar-pet/{idPet}")
-    public void deletarPet(@PathVariable Long idPet){
+    public void deletarPet(@PathVariable Long idPet) {
         facade.deletarPet(idPet);
     }
+
+    //Buscar minhas trilhas
+    @GetMapping("/trilhas/minhas-trilhas")
+    public Page<ProgressoTrilhaDto> buscarMinhasTrilhas(Pageable pageable) {
+        return facade.buscarMinhasTrilhas(pageable);
+    }
+
+    @GetMapping("/trilhas/{idTrilha}/meu-progresso")
+    public List<ProgressoModuloDto> buscarMeuProgressoPorTrilha(@PathVariable Long idTrilha){
+        return facade.buscarMeuProgressoPorTrilha(idTrilha);
+    }
+
+    @PostMapping("/trilhas/{idTrilha}/iniciar")
+    public ProgressoTrilhaDto iniciarProgressoTrilha(@PathVariable Long idTrilha) {
+        return facade.iniciarProgressoTrilha(idTrilha);
+    }
+
+    @GetMapping("/trilhas/{idTrilha}/modulos")
+    public List<ModuloResponseDto> buscarModulosPorIdTrilha(@PathVariable Long idTrilha){
+        return facade.buscarModulosPorTrilha(idTrilha);
+    }
+
+    @GetMapping("/modulos/{idModulo}")
+    public ModuloResponseDto buscarModuloPorId(@PathVariable Long idModulo) {
+        return facade.buscarModuloPorId(idModulo);
+    }
+
+    @GetMapping("/modulos/{idModulo}/exercicios")
+    public List<ExercicioResponseDto> buscarExerciciosPorModuloId(@PathVariable Long idModulo){
+        return facade.buscarExerciciosPorIdModulo(idModulo);
+    }
+
+    @PostMapping("/exercicios/{idExercicio}/responder")
+    public ProgressoExercicioDto responderExercicio(@PathVariable Long idExercicio, @RequestBody RespostaRequestDto request){
+        return facade.responderExercicio(idExercicio, request);
+    }
+
 }

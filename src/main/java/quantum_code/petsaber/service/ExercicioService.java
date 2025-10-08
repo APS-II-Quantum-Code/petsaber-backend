@@ -20,4 +20,9 @@ public class ExercicioService {
     public List<Exercicio> buscarExerciciosPorIdModulo(Long idModulo) {
         return exercicioRepository.buscarExerciciosPorIdModulo(idModulo);
     }
+
+    public Exercicio buscarExercicioPorId(Long idExercicio) {
+        return exercicioRepository.findById(idExercicio)
+                .orElseThrow(() -> new RuntimeException("Exercicio não encontrado"));
+    }
 }

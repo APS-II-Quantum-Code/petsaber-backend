@@ -21,6 +21,7 @@ public class Modulo {
     private String nome;
     private String descricao;
     private Double duracaoHoras;
+    private Integer ordem;
 
     @Lob
     @Column(columnDefinition = "TEXT")

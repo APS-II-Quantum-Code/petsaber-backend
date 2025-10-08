@@ -1,6 +1,7 @@
 package quantum_code.petsaber.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     // Você pode adicionar outros handlers de exceção aqui
@@ -21,6 +24,7 @@ public class GlobalExceptionHandler {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
+
         StandardError error = StandardError.builder()
                 .timestamp(Instant.now())
                 .status(status.value())
@@ -29,7 +33,8 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .build();
 
-
+        log.error(e.getMessage());
+        log.error(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.status(status).body(error);
     }
 

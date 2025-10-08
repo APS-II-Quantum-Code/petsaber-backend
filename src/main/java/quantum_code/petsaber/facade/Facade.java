@@ -1,21 +1,25 @@
 package quantum_code.petsaber.facade;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import quantum_code.petsaber.config.auth.AuthContext;
+import quantum_code.petsaber.controller.ProgressoExercicioDto;
 import quantum_code.petsaber.domain.*;
 import quantum_code.petsaber.dto.*;
-import quantum_code.petsaber.mapper.AlternativaMapper;
-import quantum_code.petsaber.mapper.ExericicioMapper;
-import quantum_code.petsaber.mapper.ModuloMapper;
-import quantum_code.petsaber.mapper.TrilhaMapper;
+import quantum_code.petsaber.mapper.*;
 import quantum_code.petsaber.service.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class Facade {
 
     private final AuthService authService;
@@ -27,11 +31,16 @@ public class Facade {
     private final ModuloService moduloService;
     private final ExercicioService exercicioService;
     private final AlternativaService alternativaService;
+    private final ProgressoTrilhaService progressoTrilhaService;
+    private final ProgressoModuloService progressoModuloService;
+    private final ProgressoExercicioService progressoExercicioService;
 
     private final ExericicioMapper exericicioMapper;
     private final AlternativaMapper alternativaMapper;
     private final ModuloMapper moduloMapper;
     private final TrilhaMapper trilhaMapper;
+    private final ProgressoTrilhaMapper progressoTrilhaMapper;
+    private final ProgressoModuloMapper progressoModuloMapper;
 
     private final AuthContext authContext;
 
@@ -149,4 +158,111 @@ public class Facade {
     public List<ExercicioResponseDto> buscarExerciciosPorIdModulo(Long idModulo) {
         return exericicioMapper.toDto(exercicioService.buscarExerciciosPorIdModulo(idModulo));
     }
+
+    @Transactional
+    public ProgressoTrilhaDto iniciarProgressoTrilha(Long idTrilha) {
+
+        Long idTutor = authContext.getId();
+
+        Tutor tutor = tutorService.buscarTutorPorId(idTutor);
+        Trilha trilha = trilhaService.buscarTrilhaPorId(idTrilha);
+
+        ProgressoTrilha progressoTrilha = progressoTrilhaService.buscarOuCriarTrilha(tutor, trilha);
+
+        //Inicializando os modulos para o usuario
+        List<Modulo> modulos = moduloService.buscarModulosPorIdTrilha(idTrilha);
+        progressoModuloService.inicializarModulosDaTrilha(progressoTrilha, modulos);
+
+        return progressoTrilhaMapper.toDto(progressoTrilha);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProgressoTrilhaDto> buscarMinhasTrilhas(Pageable pageable) {
+
+        Long idTutor = authContext.getId();
+        Page<ProgressoTrilha> progressoTrilha = progressoTrilhaService.buscarProgressoTrilhasPorIdTutor(pageable, idTutor);
+
+        return progressoTrilha.map(progressoTrilhaMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProgressoModuloDto> buscarMeuProgressoPorTrilha(Long idTrilha) {
+
+        Long idTutor = authContext.getId();
+
+        List<ProgressoModulo> progresso = progressoModuloService.buscarProgressoPorIdTutorEIdTrilha(idTutor, idTrilha);
+
+        return progressoModuloMapper.toDto(progresso);
+    }
+
+    @Transactional(readOnly = true)
+    public ModuloResponseDto buscarModuloPorId(Long idModulo) {
+        return moduloMapper.toDto(moduloService.buscarModuloPorId(idModulo));
+    }
+
+    @Transactional
+    public ProgressoExercicioDto responderExercicio(Long idExercicio, RespostaRequestDto request) {
+
+        Long idTutor = authContext.getId();
+
+        // Buscando exercicio por id
+        Exercicio exercicio = exercicioService.buscarExercicioPorId(idExercicio);
+
+        // Buscando o progresso do usuario no modulo da questao
+        ProgressoModulo progressoModulo = progressoModuloService.buscarProgressoModuloPorIdTutorEIdModulo(idTutor, exercicio.getModulo().getIdModulo());
+
+        // Verifica se o exercício já foi respondido corretamente anteriormente
+        Optional<ProgressoExercicio> progressoExistente = progressoExercicioService.buscarProgressoExercicioCorreto(
+                progressoModulo.getIdProgressoModulo(),
+                idExercicio
+        );
+
+        // Se já foi respondido corretamente, retorna sem salvar novamente
+        if (progressoExistente.isPresent()) {
+            return ProgressoExercicioDto.builder()
+                    .correta(true)
+                    .build();
+        }
+
+        // Busca a alternativa escolhida
+        Alternativa alternativa = alternativaService.buscarAlternativaPorId(request.getIdAlternativaEscolhida());
+
+        Boolean correta = alternativa.getCorreta();
+        Double pontosObtidos = correta ? exercicio.getPontuacao() : 0.0;
+
+        // Cria e salva o progresso do exercício
+        ProgressoExercicio progresso = ProgressoExercicio.builder()
+                .exercicio(exercicio)
+                .alternativaEscolhida(alternativa)
+                .correta(correta)
+                .pontosObtidos(pontosObtidos)
+                .dataTentativa(LocalDateTime.now())
+                .progressoModulo(progressoModulo)
+                .build();
+
+        progressoExercicioService.salvarProgressoExercicio(progresso);
+
+        // Atualiza o status do módulo
+        Long exerciciosCorretosCount = progressoExercicioService.contarExerciciosCorretosDoModulo(progressoModulo.getIdProgressoModulo());
+        Long totalExercicios = (long) exercicio.getModulo().getExercicios().size();
+
+        progressoModuloService.verificarEAtualizarStatusModulo(progressoModulo, exerciciosCorretosCount, totalExercicios);
+
+
+
+        // Atualiza o status da trilha
+        ProgressoTrilha progressoTrilha = progressoModulo.getProgressoTrilha();
+        log.info(String.valueOf(progressoTrilha));
+        log.info(String.valueOf(progressoTrilha.getIdProgressoTrilha()));
+        Long modulosConcluidos = progressoModuloService.contarModulosConcluidos(progressoTrilha.getIdProgressoTrilha());
+        Long totalModulos = progressoModuloService.contarTotalModulos(progressoTrilha.getIdProgressoTrilha());
+
+        progressoTrilhaService.verificarEAtualizarStatusTrilha(progressoTrilha, modulosConcluidos, totalModulos);
+
+        return ProgressoExercicioDto.builder()
+                .correta(correta)
+                .build();
+
+    }
+
 }

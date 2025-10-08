@@ -14,4 +14,10 @@ public class AlternativaService {
     public Alternativa salvarAlternativa(Alternativa alternativa) {
         return alternativaRepository.save(alternativa);
     }
+
+    public Alternativa buscarAlternativaPorId(Long idAlternativaEscolhida) {
+
+        return alternativaRepository.findById(idAlternativaEscolhida).
+                orElseThrow(() -> new RuntimeException("Alternativa não encontada"));
+    }
 }
