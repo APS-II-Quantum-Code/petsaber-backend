@@ -26,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
-        facade.register(registerRequestDto);
+    public TokenDto register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
+        return facade.register(registerRequestDto);
     }
 }

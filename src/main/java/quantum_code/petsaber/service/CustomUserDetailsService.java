@@ -22,7 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
 
         authContext.setId(usuario.getId());
-        authContext.setUsername(usuario.getEmail());
+        authContext.setEmail(usuario.getEmail());
+        authContext.setRole(usuario.getRole());
+        authContext.setNome(usuario.getNome());
 
         return new CustomUserDetails(usuario);
     }

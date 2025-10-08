@@ -12,9 +12,6 @@ public class RegisterRequestDto {
     @NotBlank(message = "O nome deve ser informado")
     private String nome;
 
-    @NotBlank(message = "O cpf deve ser informado")
-    private String cpf;
-
     @NotBlank(message = "O email deve ser informado")
     @EmailValid
     private String email;

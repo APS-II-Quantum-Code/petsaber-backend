@@ -10,4 +10,6 @@ public interface Usuario {
     String getSenha();
 
     Role getRole();
+
+    String getNome();
 }

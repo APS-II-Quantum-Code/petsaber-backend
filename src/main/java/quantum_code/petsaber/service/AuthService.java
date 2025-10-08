@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import quantum_code.petsaber.config.auth.AuthContext;
 import quantum_code.petsaber.config.auth.CustomUserDetails;
 import quantum_code.petsaber.domain.Consultor;
 import quantum_code.petsaber.domain.Tutor;
@@ -24,6 +25,7 @@ public class AuthService {
     private final TutorRepository tutorRepository;
     private final ConsultorRepository consultorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthContext authContext;
 
     public TokenDto login(LoginRequestDto loginRequestDto) {
 
@@ -34,18 +36,21 @@ public class AuthService {
         String token = tokenService.gerarToken(userDetails);
 
         return TokenDto.builder()
+                .idUser(authContext.getId())
+                .nome(authContext.getNome())
+                .email(authContext.getEmail())
+                .role(authContext.getRole())
                 .token(token)
                 .build();
     }
 
-    public void register(RegisterRequestDto registerRequestDto) {
+    public TokenDto register(RegisterRequestDto registerRequestDto) {
 
         if (registerRequestDto.getRole() == Role.TUTOR) {
             Tutor tutor = Tutor.builder()
                     .nome(registerRequestDto.getNome())
                     .email(registerRequestDto.getEmail())
                     .senha(passwordEncoder.encode(registerRequestDto.getSenha()))
-                    .cpf(registerRequestDto.getCpf())
                     .build();
 
             tutorRepository.save(tutor);
@@ -55,10 +60,15 @@ public class AuthService {
                     .nome(registerRequestDto.getNome())
                     .email(registerRequestDto.getEmail())
                     .senha(passwordEncoder.encode(registerRequestDto.getSenha()))
-                    .cpf(registerRequestDto.getCpf())
                     .build();
 
             consultorRepository.save(consultor);
         }
+
+
+        return login(LoginRequestDto.builder()
+                .email(registerRequestDto.getEmail())
+                .senha(registerRequestDto.getSenha())
+                .build());
     }
 }

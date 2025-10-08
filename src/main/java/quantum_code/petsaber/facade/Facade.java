@@ -49,8 +49,8 @@ public class Facade {
         return authService.login(loginRequestDto);
     }
 
-    public void register(RegisterRequestDto registerRequestDto) {
-        authService.register(registerRequestDto);
+    public TokenDto register(RegisterRequestDto registerRequestDto) {
+        return authService.register(registerRequestDto);
     }
 
     @Transactional
