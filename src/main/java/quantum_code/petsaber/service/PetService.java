@@ -30,4 +30,8 @@ public class PetService {
     public void deletarPet(Long idPet) {
         petRepository.deleteById(idPet);
     }
+
+    public Integer contarQtdPetsPorTutor(Long idTutor) {
+        return petRepository.contarQtdPetsPorTutor(idTutor);
+    }
 }

@@ -74,4 +74,8 @@ public class ProgressoModuloService {
         var response = progressoModuloRepository.contarTotalModulos(idProgressoTrilha);
         return response;
     }
+
+    public Integer contarQtdModulosConcluidas(Long idTutor) {
+        return progressoModuloRepository.contarQtdModulosConcluidas(idTutor);
+    }
 }

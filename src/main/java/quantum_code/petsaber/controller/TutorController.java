@@ -18,9 +18,34 @@ public class TutorController {
 
     private final Facade facade;
 
+    @GetMapping("/meu-progresso")
+    public ProgressoDto buscarMeuProgresso() {
+        return facade.buscarMeuProgresso();
+    }
+
+    @GetMapping("/especies")
+    public List<EspecieResponseDto> buscarEspecies() {
+        return facade.buscarEspecies();
+    }
+
+    @GetMapping("/especies/{idEspecie}/racas")
+    public List<RacaResponseDto> buscarRacas(@PathVariable Long idEspecie) {
+        return facade.buscarRacas(idEspecie);
+    }
+
+    @GetMapping("/portes")
+    public List<PorteResponseDto> buscarPortes() {
+        return facade.buscarPortes();
+    }
+
     @GetMapping("/buscar-pets")
     public List<PetResponseDto> buscarPetsPorTutor() {
         return facade.buscarPetsPorTutor();
+    }
+
+    @GetMapping("/buscar-pets/{idPet}")
+    public PetResponseDto buscarPetPorId(@PathVariable Long idPet) {
+        return facade.buscarPetPorId(idPet);
     }
 
     @PostMapping("/novo-pet")
@@ -45,7 +70,7 @@ public class TutorController {
     }
 
     @GetMapping("/trilhas/{idTrilha}/meu-progresso")
-    public List<ProgressoModuloDto> buscarMeuProgressoPorTrilha(@PathVariable Long idTrilha){
+    public List<ProgressoModuloDto> buscarMeuProgressoPorTrilha(@PathVariable Long idTrilha) {
         return facade.buscarMeuProgressoPorTrilha(idTrilha);
     }
 
@@ -55,7 +80,7 @@ public class TutorController {
     }
 
     @GetMapping("/trilhas/{idTrilha}/modulos")
-    public List<ModuloResponseDto> buscarModulosPorIdTrilha(@PathVariable Long idTrilha){
+    public List<ModuloResponseDto> buscarModulosPorIdTrilha(@PathVariable Long idTrilha) {
         return facade.buscarModulosPorTrilha(idTrilha);
     }
 
@@ -65,12 +90,12 @@ public class TutorController {
     }
 
     @GetMapping("/modulos/{idModulo}/exercicios")
-    public List<ExercicioResponseDto> buscarExerciciosPorModuloId(@PathVariable Long idModulo){
+    public List<ExercicioResponseDto> buscarExerciciosPorModuloId(@PathVariable Long idModulo) {
         return facade.buscarExerciciosPorIdModulo(idModulo);
     }
 
     @PostMapping("/exercicios/{idExercicio}/responder")
-    public ProgressoExercicioDto responderExercicio(@PathVariable Long idExercicio, @RequestBody RespostaRequestDto request){
+    public ProgressoExercicioDto responderExercicio(@PathVariable Long idExercicio, @RequestBody RespostaRequestDto request) {
         return facade.responderExercicio(idExercicio, request);
     }
 

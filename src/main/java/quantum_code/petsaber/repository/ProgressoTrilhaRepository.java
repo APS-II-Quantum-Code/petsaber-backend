@@ -21,4 +21,7 @@ public interface ProgressoTrilhaRepository extends JpaRepository<ProgressoTrilha
     @Query("SELECT p FROM ProgressoTrilha p " +
             "WHERE p.trilha.idTrilha = :idTrilha AND p.tutor.idTutor = :idTutor")
     Optional<ProgressoTrilha> verificarSeTutorIniciouTrilha(Long idTutor, Long idTrilha);
+
+    @Query("SELECT COUNT(p) FROM ProgressoTrilha p WHERE p.status = 'CONCLUIDO' AND p.tutor.idTutor = :idTutor")
+    Integer contarQtdTrilhasConcluidas(Long idTutor);
 }

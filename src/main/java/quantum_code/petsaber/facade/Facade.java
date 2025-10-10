@@ -7,13 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import quantum_code.petsaber.config.auth.AuthContext;
+import quantum_code.petsaber.controller.PorteResponseDto;
 import quantum_code.petsaber.controller.ProgressoExercicioDto;
 import quantum_code.petsaber.domain.*;
 import quantum_code.petsaber.dto.*;
 import quantum_code.petsaber.mapper.*;
 import quantum_code.petsaber.service.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +37,7 @@ public class Facade {
     private final ProgressoTrilhaService progressoTrilhaService;
     private final ProgressoModuloService progressoModuloService;
     private final ProgressoExercicioService progressoExercicioService;
+    private final EspecieService especieService;
 
     private final ExericicioMapper exericicioMapper;
     private final AlternativaMapper alternativaMapper;
@@ -41,6 +45,10 @@ public class Facade {
     private final TrilhaMapper trilhaMapper;
     private final ProgressoTrilhaMapper progressoTrilhaMapper;
     private final ProgressoModuloMapper progressoModuloMapper;
+    private final EspecieMapper especieMapper;
+    private final RacaMapper racaMapper;
+    private final PorteMapper porteMapper;
+    private final PetMapper petMapper;
 
     private final AuthContext authContext;
 
@@ -77,19 +85,13 @@ public class Facade {
     public List<PetResponseDto> buscarPetsPorTutor() {
 
         Long idTutor = authContext.getId();
+        return petMapper.toDto(petService.buscarPetsPorTutorId(idTutor));
+    }
 
-        List<Pet> pets = petService.buscarPetsPorTutorId(idTutor);
-
-        return pets.stream().map(pet -> PetResponseDto.builder()
-                        .nome(pet.getNome())
-                        .urlImagem(pet.getUrlImagem())
-                        .sexo(pet.getSexo())
-                        .dataNascimento(pet.getDataNascimento())
-                        .raca(pet.getRaca().getNome())
-                        .especie(pet.getRaca().getEspecie().getNome())
-                        .porte(pet.getPorte().getNome())
-                        .build())
-                .toList();
+    private Integer calcularIdade(LocalDate dataNascimento) {
+        if (dataNascimento == null) return 0;
+        long anos = ChronoUnit.YEARS.between(dataNascimento, LocalDate.now());
+        return (int) Math.max(0, anos);
     }
 
     @Transactional
@@ -249,7 +251,6 @@ public class Facade {
         progressoModuloService.verificarEAtualizarStatusModulo(progressoModulo, exerciciosCorretosCount, totalExercicios);
 
 
-
         // Atualiza o status da trilha
         ProgressoTrilha progressoTrilha = progressoModulo.getProgressoTrilha();
         log.info(String.valueOf(progressoTrilha));
@@ -265,4 +266,36 @@ public class Facade {
 
     }
 
+    @Transactional(readOnly = true)
+    public ProgressoDto buscarMeuProgresso() {
+
+        Long idTutor = authContext.getId();
+
+        return ProgressoDto.builder()
+                .qtdPets(petService.contarQtdPetsPorTutor(idTutor))
+                .qtdTrilhasConcluidas(progressoTrilhaService.contarQtdTrilhasConcluidas(idTutor))
+                .pontosTotais(0)// TODO: BUSCAR TOTAL DE PONTOS
+                .qtdModulosConcluidos(progressoModuloService.contarQtdModulosConcluidas(idTutor))
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EspecieResponseDto> buscarEspecies() {
+        return especieMapper.toDto(especieService.buscarEspecies());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RacaResponseDto> buscarRacas(Long idEspecie) {
+        return racaMapper.toDto(racaService.buscarRacaPorEspecieId(idEspecie));
+    }
+
+    @Transactional(readOnly = true)
+    public List<PorteResponseDto> buscarPortes() {
+        return porteMapper.toDto(porteService.buscarTodosPortes());
+    }
+
+    @Transactional(readOnly = true)
+    public PetResponseDto buscarPetPorId(Long idPet) {
+        return petMapper.toDto(petService.buscarPetPorId(idPet));
+    }
 }

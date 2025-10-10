@@ -16,7 +16,7 @@ public class Porte {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idPorte;
     private String nome;
     private String descricao;
 }

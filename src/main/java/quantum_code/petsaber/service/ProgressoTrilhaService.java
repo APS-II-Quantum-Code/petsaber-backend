@@ -63,4 +63,8 @@ public class ProgressoTrilhaService {
         return progressoTrilhaRepository.findById(idProgressoTrilha)
                 .orElseThrow(() -> new RuntimeException("Progresso da trilha não encontrado"));
     }
+
+    public Integer contarQtdTrilhasConcluidas(Long idTutor) {
+        return progressoTrilhaRepository.contarQtdTrilhasConcluidas(idTutor);
+    }
 }

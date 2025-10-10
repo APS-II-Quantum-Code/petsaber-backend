@@ -15,4 +15,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
             "JOIN FETCH p.porte " +
             "WHERE p.tutor.idTutor = :idTutor")
     List<Pet> findByTutorId(Long idTutor);
+
+    @Query("SELECT COUNT(p) FROM Pet p WHERE p.tutor.idTutor = :idTutor")
+    Integer contarQtdPetsPorTutor(Long idTutor);
 }
