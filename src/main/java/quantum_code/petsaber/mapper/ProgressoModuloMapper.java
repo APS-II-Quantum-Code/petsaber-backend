@@ -12,6 +12,7 @@ public interface ProgressoModuloMapper {
 
     @Mapping(source = "modulo.nome", target = "nomeModulo")
     @Mapping(source = "modulo.idModulo", target = "idModulo")
+    @Mapping(expression = "java(progressoModulo.getStatus().toString())", target = "status")
     ProgressoModuloDto toDto(ProgressoModulo progressoModulo);
 
     @Mapping(source = "modulo.nome", target = "nomeModulo")

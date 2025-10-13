@@ -28,7 +28,7 @@ public class ProgressoTrilhaService {
                 .tutor(tutor)
                 .dataInicio(LocalDateTime.now())
                 .status(Status.EM_ANDAMENTO)
-                .percentualConclusao(0.0)
+                .modulosConcluidos(0)
                 .build()));
 
     }
@@ -37,10 +37,9 @@ public class ProgressoTrilhaService {
         return progressoTrilhaRepository.buscarProgressoTrilhasPorIdTutor(pageable, idTutor);
     }
 
-    public void verificarEAtualizarStatusTrilha(ProgressoTrilha progressoTrilha, Long modulosConcluidos, Long totalModulos) {
-        // Calcula o percentual de conclusão
-        Double percentual = totalModulos > 0 ? (modulosConcluidos.doubleValue() / totalModulos.doubleValue()) * 100 : 0.0;
-        progressoTrilha.setPercentualConclusao(percentual);
+    public void verificarEAtualizarStatusTrilha(ProgressoTrilha progressoTrilha, Integer modulosConcluidos, Integer totalModulos) {
+
+        progressoTrilha.setModulosConcluidos(modulosConcluidos);
 
         // Se pelo menos um módulo foi iniciado/concluído e a trilha estava NAO_INICIADO, muda para EM_ANDAMENTO
         if (progressoTrilha.getStatus() == Status.NAO_INICIADO && modulosConcluidos > 0) {

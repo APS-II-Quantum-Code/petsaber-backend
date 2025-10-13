@@ -22,7 +22,7 @@ public class ProgressoTrilha {
     private LocalDateTime dataConclusao;
     @Enumerated(EnumType.STRING)
     private Status status;
-    private Double percentualConclusao;
+    private Integer modulosConcluidos;
 
     @ManyToOne
     @JoinColumn(name = "ID_TUTOR")

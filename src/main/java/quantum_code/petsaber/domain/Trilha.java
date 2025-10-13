@@ -20,8 +20,10 @@ public class Trilha {
     private Long idTrilha;
     private String nome;
     private String descricao;
-    private Double duracaoHoras;
+    @Enumerated(EnumType.STRING)
     private Nivel nivel;
+    private Integer horasTotais;
+    private Integer modulosTotais;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_RACA")

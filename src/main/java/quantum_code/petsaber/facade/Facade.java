@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import quantum_code.petsaber.config.auth.AuthContext;
-import quantum_code.petsaber.controller.PorteResponseDto;
-import quantum_code.petsaber.controller.ProgressoExercicioDto;
+import quantum_code.petsaber.dto.PorteResponseDto;
+import quantum_code.petsaber.dto.ProgressoExercicioDto;
 import quantum_code.petsaber.domain.*;
 import quantum_code.petsaber.dto.*;
 import quantum_code.petsaber.mapper.*;
@@ -118,6 +118,8 @@ public class Facade {
 
         Trilha trilha = trilhaMapper.toEntity(trilhaRequestDto);
         trilha.setRaca(racaService.buscarRacaPorId(trilhaRequestDto.getIdRaca()));
+        trilha.setHorasTotais(0);
+        trilha.setModulosTotais(0);
 
         return trilhaMapper.toDto(trilhaService.salvarTrilha(trilha));
     }
@@ -126,7 +128,13 @@ public class Facade {
     public ModuloResponseDto criarNovoModulo(Long idTrilha, ModuloRequestDto moduloRequestDto) {
 
         Modulo modulo = moduloMapper.toEntity(moduloRequestDto);
-        modulo.setTrilha(trilhaService.buscarTrilhaPorId(idTrilha));
+
+        Trilha trilha = trilhaService.buscarTrilhaPorId(idTrilha);
+        trilha.setModulosTotais(trilha.getModulosTotais() + 1);
+        trilha.setHorasTotais(trilha.getHorasTotais() + moduloRequestDto.getDuracaoHoras());
+        trilhaService.salvarTrilha(trilha);
+
+        modulo.setTrilha(trilha);
 
         return moduloMapper.toDto(moduloService.salvarModulo(modulo));
     }
@@ -184,6 +192,12 @@ public class Facade {
         Long idTutor = authContext.getId();
         Page<ProgressoTrilha> progressoTrilha = progressoTrilhaService.buscarProgressoTrilhasPorIdTutor(pageable, idTutor);
 
+
+        //modulos
+        //Modulos Concluidos
+
+
+
         return progressoTrilha.map(progressoTrilhaMapper::toDto);
     }
 
@@ -213,24 +227,31 @@ public class Facade {
         // Buscando o progresso do usuario no modulo da questao
         ProgressoModulo progressoModulo = progressoModuloService.buscarProgressoModuloPorIdTutorEIdModulo(idTutor, exercicio.getModulo().getIdModulo());
 
+        // Busca a alternativa escolhida
+        Alternativa alternativa = alternativaService.buscarAlternativaPorId(request.getIdAlternativaEscolhida());
+
+        Boolean correta = alternativa.getCorreta();
+        Double pontosObtidos = correta ? exercicio.getPontuacao() : 0.0;
+
         // Verifica se o exercício já foi respondido corretamente anteriormente
-        Optional<ProgressoExercicio> progressoExistente = progressoExercicioService.buscarProgressoExercicioCorreto(
+        Optional<ProgressoExercicio> progressoExistente = progressoExercicioService.buscarProgressoExercicio(
                 progressoModulo.getIdProgressoModulo(),
                 idExercicio
         );
 
         // Se já foi respondido corretamente, retorna sem salvar novamente
         if (progressoExistente.isPresent()) {
+            ProgressoExercicio progresso = progressoExistente.get();
+            progresso.setDataTentativa(LocalDateTime.now());
+            progresso.setCorreta(correta);
+            progresso.setPontosObtidos(pontosObtidos);
+
+            progressoExercicioService.salvarProgressoExercicio(progresso);
             return ProgressoExercicioDto.builder()
-                    .correta(true)
+                    .correta(correta)
                     .build();
         }
 
-        // Busca a alternativa escolhida
-        Alternativa alternativa = alternativaService.buscarAlternativaPorId(request.getIdAlternativaEscolhida());
-
-        Boolean correta = alternativa.getCorreta();
-        Double pontosObtidos = correta ? exercicio.getPontuacao() : 0.0;
 
         // Cria e salva o progresso do exercício
         ProgressoExercicio progresso = ProgressoExercicio.builder()
@@ -255,8 +276,8 @@ public class Facade {
         ProgressoTrilha progressoTrilha = progressoModulo.getProgressoTrilha();
         log.info(String.valueOf(progressoTrilha));
         log.info(String.valueOf(progressoTrilha.getIdProgressoTrilha()));
-        Long modulosConcluidos = progressoModuloService.contarModulosConcluidos(progressoTrilha.getIdProgressoTrilha());
-        Long totalModulos = progressoModuloService.contarTotalModulos(progressoTrilha.getIdProgressoTrilha());
+        Integer modulosConcluidos = progressoModuloService.contarModulosConcluidos(progressoTrilha.getIdProgressoTrilha());
+        Integer totalModulos = progressoModuloService.contarTotalModulos(progressoTrilha.getIdProgressoTrilha());
 
         progressoTrilhaService.verificarEAtualizarStatusTrilha(progressoTrilha, modulosConcluidos, totalModulos);
 
@@ -297,5 +318,12 @@ public class Facade {
     @Transactional(readOnly = true)
     public PetResponseDto buscarPetPorId(Long idPet) {
         return petMapper.toDto(petService.buscarPetPorId(idPet));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TrilhaResponseDto> buscarTodasAsTrilhas(Pageable pageable) {
+
+        Long idTutor = authContext.getId();
+        return trilhaService.buscarTrilhas(pageable, idTutor).map(trilhaMapper::toDto);
     }
 }

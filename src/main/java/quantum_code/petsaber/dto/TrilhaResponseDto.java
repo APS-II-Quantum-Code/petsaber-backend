@@ -11,5 +11,6 @@ public class TrilhaResponseDto {
     private String nome;
     private String descricao;
     private String nivel;
-    private String raca;
+    private Integer horasTotais;
+    private Integer modulosTotais;
 }

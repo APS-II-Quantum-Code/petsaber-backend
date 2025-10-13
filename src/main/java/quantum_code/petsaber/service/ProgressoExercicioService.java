@@ -18,8 +18,8 @@ public class ProgressoExercicioService {
         return progressoExercicioRepository.save(progressoExercicio);
     }
 
-    public Optional<ProgressoExercicio> buscarProgressoExercicioCorreto(Long idProgressoModulo, Long idExercicio) {
-        return progressoExercicioRepository.buscarProgressoExercicioCorreto(idProgressoModulo, idExercicio);
+    public Optional<ProgressoExercicio> buscarProgressoExercicio(Long idProgressoModulo, Long idExercicio) {
+        return progressoExercicioRepository.buscarProgressoExercicio(idProgressoModulo, idExercicio);
     }
 
     public Long contarExerciciosCorretosDoModulo(Long idProgressoModulo) {

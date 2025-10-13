@@ -65,14 +65,13 @@ public class ProgressoModuloService {
         progressoModuloRepository.save(progressoModulo);
     }
 
-    public Long contarModulosConcluidos(Long idProgressoTrilha) {
-        var response = progressoModuloRepository.contarModulosConcluidos(idProgressoTrilha);
-        return response;
+    public Integer contarModulosConcluidos(Long idProgressoTrilha) {
+        return progressoModuloRepository.contarModulosConcluidos(idProgressoTrilha);
     }
 
-    public Long contarTotalModulos(Long idProgressoTrilha) {
-        var response = progressoModuloRepository.contarTotalModulos(idProgressoTrilha);
-        return response;
+    public Integer contarTotalModulos(Long idProgressoTrilha) {
+        return progressoModuloRepository.contarTotalModulos(idProgressoTrilha);
+
     }
 
     public Integer contarQtdModulosConcluidas(Long idTutor) {

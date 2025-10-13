@@ -63,6 +63,11 @@ public class TutorController {
         facade.deletarPet(idPet);
     }
 
+    @GetMapping("/trilhas")
+    public Page<TrilhaResponseDto> buscarTodasAsTrilhas(Pageable pageable) {
+        return facade.buscarTodasAsTrilhas(pageable);
+    }
+
     //Buscar minhas trilhas
     @GetMapping("/trilhas/minhas-trilhas")
     public Page<ProgressoTrilhaDto> buscarMinhasTrilhas(Pageable pageable) {

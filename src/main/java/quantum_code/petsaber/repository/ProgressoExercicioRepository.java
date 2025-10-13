@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface ProgressoExercicioRepository extends JpaRepository<ProgressoExercicio, Long> {
 
-    @Query("SELECT p FROM ProgressoExercicio p WHERE p.progressoModulo.idProgressoModulo = :idProgressoModulo AND p.exercicio.idExercicio = :idExercicio AND p.correta = true")
-    Optional<ProgressoExercicio> buscarProgressoExercicioCorreto(Long idProgressoModulo, Long idExercicio);
+    @Query("SELECT p FROM ProgressoExercicio p WHERE p.progressoModulo.idProgressoModulo = :idProgressoModulo AND p.exercicio.idExercicio = :idExercicio")
+    Optional<ProgressoExercicio> buscarProgressoExercicio(Long idProgressoModulo, Long idExercicio);
 
     @Query("SELECT COUNT(p) FROM ProgressoExercicio p WHERE p.progressoModulo.idProgressoModulo = :idProgressoModulo AND p.correta = true")
     Long contarExerciciosCorretosDoModulo(Long idProgressoModulo);

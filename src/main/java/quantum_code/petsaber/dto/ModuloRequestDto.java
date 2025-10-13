@@ -9,7 +9,7 @@ public class ModuloRequestDto {
 
     private String nome;
     private String descricao;
-    private Double duracaoHoras;
+    private Integer duracaoHoras;
     private String conteudo;
 
 }
