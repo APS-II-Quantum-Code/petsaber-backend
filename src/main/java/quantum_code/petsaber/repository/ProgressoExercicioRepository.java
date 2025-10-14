@@ -14,4 +14,6 @@ public interface ProgressoExercicioRepository extends JpaRepository<ProgressoExe
     @Query("SELECT COUNT(p) FROM ProgressoExercicio p WHERE p.progressoModulo.idProgressoModulo = :idProgressoModulo AND p.correta = true")
     Long contarExerciciosCorretosDoModulo(Long idProgressoModulo);
 
+    @Query("SELECT SUM(p.pontosObtidos) FROM ProgressoExercicio p WHERE p.progressoModulo.progressoTrilha.tutor.idTutor = :idTutor")
+    Integer buscarPontuacao(Long idTutor);
 }

@@ -274,12 +274,11 @@ public class Facade {
 
         // Atualiza o status da trilha
         ProgressoTrilha progressoTrilha = progressoModulo.getProgressoTrilha();
-        log.info(String.valueOf(progressoTrilha));
-        log.info(String.valueOf(progressoTrilha.getIdProgressoTrilha()));
         Integer modulosConcluidos = progressoModuloService.contarModulosConcluidos(progressoTrilha.getIdProgressoTrilha());
         Integer totalModulos = progressoModuloService.contarTotalModulos(progressoTrilha.getIdProgressoTrilha());
 
         progressoTrilhaService.verificarEAtualizarStatusTrilha(progressoTrilha, modulosConcluidos, totalModulos);
+
 
         return ProgressoExercicioDto.builder()
                 .correta(correta)
@@ -295,7 +294,7 @@ public class Facade {
         return ProgressoDto.builder()
                 .qtdPets(petService.contarQtdPetsPorTutor(idTutor))
                 .qtdTrilhasConcluidas(progressoTrilhaService.contarQtdTrilhasConcluidas(idTutor))
-                .pontosTotais(0)// TODO: BUSCAR TOTAL DE PONTOS
+                .pontosTotais(progressoExercicioService.buscarPontuacao(idTutor))// TODO: BUSCAR TOTAL DE PONTOS
                 .qtdModulosConcluidos(progressoModuloService.contarQtdModulosConcluidas(idTutor))
                 .build();
     }

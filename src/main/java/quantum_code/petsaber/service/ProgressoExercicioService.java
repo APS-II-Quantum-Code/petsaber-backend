@@ -25,4 +25,8 @@ public class ProgressoExercicioService {
     public Long contarExerciciosCorretosDoModulo(Long idProgressoModulo) {
         return progressoExercicioRepository.contarExerciciosCorretosDoModulo(idProgressoModulo);
     }
+
+    public Integer buscarPontuacao(Long idTutor) {
+        return progressoExercicioRepository.buscarPontuacao(idTutor);
+    }
 }
