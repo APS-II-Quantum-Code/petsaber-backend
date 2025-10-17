@@ -20,6 +20,7 @@ public class ProgressoModulo {
     private Long idProgressoModulo;
     private LocalDateTime dataInicio;
     private LocalDateTime dateConclusao;
+    private Double percentualAcerto;
     @Enumerated(EnumType.STRING)
     private Status status;
 

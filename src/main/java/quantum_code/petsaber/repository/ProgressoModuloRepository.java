@@ -26,4 +26,8 @@ public interface ProgressoModuloRepository extends JpaRepository<ProgressoModulo
 
     @Query("SELECT COUNT(p) FROM  ProgressoModulo p WHERE p.status = 'CONCLUIDO' AND p.progressoTrilha.tutor.idTutor = :idTutor")
     Integer contarQtdModulosConcluidas(Long idTutor);
+
+    @Query("SELECT p FROM ProgressoModulo p " +
+            "WHERE p.modulo.idModulo = :idModulo AND p.progressoTrilha.tutor.idTutor = :idTutor")
+    ProgressoModulo buscarProgressoModuloPorId(Long idModulo, Long idTutor);
 }

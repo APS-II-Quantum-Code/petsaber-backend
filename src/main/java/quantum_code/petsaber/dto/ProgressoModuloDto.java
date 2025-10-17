@@ -10,4 +10,5 @@ public class ProgressoModuloDto {
     private Long idModulo;
     private String nomeModulo;
     private String status;
+    private Double percentualAcerto;
 }

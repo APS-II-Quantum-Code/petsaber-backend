@@ -94,6 +94,11 @@ public class TutorController {
         return facade.buscarModuloPorId(idModulo);
     }
 
+    @GetMapping("/modulos/{idModulo}/meu-progresso")
+    public ProgressoModuloDto buscarProgressoModuloPorId(@PathVariable Long idModulo) {
+        return facade.buscarProgressoModuloPorId(idModulo);
+    }
+
     @GetMapping("/modulos/{idModulo}/exercicios")
     public List<ExercicioResponseDto> buscarExerciciosPorModuloId(@PathVariable Long idModulo) {
         return facade.buscarExerciciosPorIdModulo(idModulo);

@@ -247,6 +247,12 @@ public class Facade {
             progresso.setPontosObtidos(pontosObtidos);
 
             progressoExercicioService.salvarProgressoExercicio(progresso);
+
+            Long exerciciosCorretosCount = progressoExercicioService.contarExerciciosCorretosDoModulo(progressoModulo.getIdProgressoModulo());
+            Long totalExercicios = (long) exercicio.getModulo().getExercicios().size();
+
+            progressoModuloService.verificarEAtualizarStatusModulo(progressoModulo, exerciciosCorretosCount, totalExercicios);
+
             return ProgressoExercicioDto.builder()
                     .correta(correta)
                     .build();
@@ -324,5 +330,13 @@ public class Facade {
 
         Long idTutor = authContext.getId();
         return trilhaService.buscarTrilhas(pageable, idTutor).map(trilhaMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public ProgressoModuloDto buscarProgressoModuloPorId(Long idModulo) {
+
+        Long idTutor = authContext.getId();
+
+        return progressoModuloMapper.toDto(progressoModuloService.buscarProgressoModuloPorId(idModulo, idTutor));
     }
 }

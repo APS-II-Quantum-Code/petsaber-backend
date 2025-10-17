@@ -50,6 +50,9 @@ public class ProgressoModuloService {
     }
 
     public void verificarEAtualizarStatusModulo(ProgressoModulo progressoModulo, Long exerciciosCorretosCount, Long totalExercicios) {
+
+        Double calculo = ((double) exerciciosCorretosCount / (double) totalExercicios) * 100;
+        progressoModulo.setPercentualAcerto(calculo);
         // Se o módulo ainda não foi iniciado, marca como EM_ANDAMENTO
         if (progressoModulo.getStatus() == Status.NAO_INICIADO) {
             progressoModulo.setStatus(Status.EM_ANDAMENTO);
@@ -57,7 +60,7 @@ public class ProgressoModuloService {
         }
 
         // Se todos os exercícios foram respondidos corretamente, marca como CONCLUIDO
-        if (exerciciosCorretosCount.equals(totalExercicios)) {
+        if (progressoModulo.getPercentualAcerto() >= 75.0) {
             progressoModulo.setStatus(Status.CONCLUIDO);
             progressoModulo.setDateConclusao(java.time.LocalDateTime.now());
         }
@@ -76,5 +79,9 @@ public class ProgressoModuloService {
 
     public Integer contarQtdModulosConcluidas(Long idTutor) {
         return progressoModuloRepository.contarQtdModulosConcluidas(idTutor);
+    }
+
+    public ProgressoModulo buscarProgressoModuloPorId(Long idModulo, Long idTutor) {
+        return progressoModuloRepository.buscarProgressoModuloPorId(idModulo, idTutor);
     }
 }
