@@ -109,4 +109,9 @@ public class TutorController {
         return facade.responderExercicio(idExercicio, request);
     }
 
+    @GetMapping("/ranking")
+    public Page<ItemRankingDto> buscarRanking(Pageable pageable){
+        return facade.buscarRanking(pageable);
+    }
+
 }

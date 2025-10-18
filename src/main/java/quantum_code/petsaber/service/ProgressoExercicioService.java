@@ -1,8 +1,11 @@
 package quantum_code.petsaber.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import quantum_code.petsaber.domain.ProgressoExercicio;
+import quantum_code.petsaber.dto.ItemRankingDto;
 import quantum_code.petsaber.repository.ProgressoExercicioRepository;
 
 import java.util.Optional;
@@ -28,5 +31,9 @@ public class ProgressoExercicioService {
 
     public Integer buscarPontuacao(Long idTutor) {
         return progressoExercicioRepository.buscarPontuacao(idTutor);
+    }
+
+    public Page<ItemRankingDto> buscarRanking(Pageable pageable) {
+        return progressoExercicioRepository.buscarRanking(pageable);
     }
 }

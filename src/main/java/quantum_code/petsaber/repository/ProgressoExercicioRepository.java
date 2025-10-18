@@ -1,8 +1,11 @@
 package quantum_code.petsaber.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import quantum_code.petsaber.domain.ProgressoExercicio;
+import quantum_code.petsaber.dto.ItemRankingDto;
 
 import java.util.Optional;
 
@@ -16,4 +19,10 @@ public interface ProgressoExercicioRepository extends JpaRepository<ProgressoExe
 
     @Query("SELECT SUM(p.pontosObtidos) FROM ProgressoExercicio p WHERE p.progressoModulo.progressoTrilha.tutor.idTutor = :idTutor")
     Integer buscarPontuacao(Long idTutor);
+
+    @Query("SELECT new quantum_code.petsaber.dto.ItemRankingDto(p.progressoModulo.progressoTrilha.tutor.idTutor, p.progressoModulo.progressoTrilha.tutor.nome, SUM(p.pontosObtidos), false)  " +
+            "FROM ProgressoExercicio p " +
+            "GROUP BY p.progressoModulo.progressoTrilha.tutor " +
+            "ORDER BY SUM(p.pontosObtidos)")
+    Page<ItemRankingDto> buscarRanking(Pageable pageable);
 }

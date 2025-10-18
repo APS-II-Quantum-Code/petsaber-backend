@@ -300,7 +300,7 @@ public class Facade {
         return ProgressoDto.builder()
                 .qtdPets(petService.contarQtdPetsPorTutor(idTutor))
                 .qtdTrilhasConcluidas(progressoTrilhaService.contarQtdTrilhasConcluidas(idTutor))
-                .pontosTotais(progressoExercicioService.buscarPontuacao(idTutor))// TODO: BUSCAR TOTAL DE PONTOS
+                .pontosTotais(progressoExercicioService.buscarPontuacao(idTutor))
                 .qtdModulosConcluidos(progressoModuloService.contarQtdModulosConcluidas(idTutor))
                 .build();
     }
@@ -338,5 +338,19 @@ public class Facade {
         Long idTutor = authContext.getId();
 
         return progressoModuloMapper.toDto(progressoModuloService.buscarProgressoModuloPorId(idModulo, idTutor));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemRankingDto> buscarRanking(Pageable pageable) {
+
+        Long idTutor = authContext.getId();
+
+        return progressoExercicioService.buscarRanking(pageable).map(itemRankingDto -> {
+            if (idTutor.equals(itemRankingDto.getIdTutor())) {
+                itemRankingDto.setLogado(true);
+            }
+
+            return itemRankingDto;
+        });
     }
 }
