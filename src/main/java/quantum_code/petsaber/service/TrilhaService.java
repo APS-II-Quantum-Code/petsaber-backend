@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import quantum_code.petsaber.domain.Trilha;
+import quantum_code.petsaber.enuns.Nivel;
 import quantum_code.petsaber.repository.TrilhaRepository;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class TrilhaService {
         return trilhaRepository.findAll();
     }
 
-    public Page<Trilha> buscarTrilhas(Pageable pageable, Long idTutor) {
-        return trilhaRepository.buscarTodasTrilhasDisponiveis(pageable, idTutor);
+    public Page<Trilha> buscarTrilhas(Pageable pageable, Long idTutor, Long idRaca, Nivel nivel) {
+        return trilhaRepository.buscarTodasTrilhasDisponiveis(pageable, idTutor, idRaca, nivel);
     }
 
     public Trilha buscarTrilhaPorModuloId(Long idModulo) {

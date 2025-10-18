@@ -17,6 +17,7 @@ public interface TrilhaMapper {
 
     @Mapping(source = "horasTotais", target = "horasTotais")
     @Mapping(expression = "java(trilha.getNivel().toString())", target = "nivel")
+    @Mapping(source = "raca.nome", target = "raca")
     TrilhaResponseDto toDto(Trilha trilha);
 
     @Mapping(source = "horasTotais", target = "horasTotais")

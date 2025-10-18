@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import quantum_code.petsaber.dto.*;
+import quantum_code.petsaber.enuns.Nivel;
 import quantum_code.petsaber.facade.Facade;
 
 import java.util.List;
@@ -64,8 +65,8 @@ public class TutorController {
     }
 
     @GetMapping("/trilhas")
-    public Page<TrilhaResponseDto> buscarTodasAsTrilhas(Pageable pageable) {
-        return facade.buscarTodasAsTrilhas(pageable);
+    public Page<TrilhaResponseDto> buscarTodasAsTrilhas(Pageable pageable, @RequestParam(required = false) Long idRaca, @RequestParam(required = false) Nivel nivel) {
+        return facade.buscarTodasAsTrilhas(pageable, idRaca, nivel);
     }
 
     //Buscar minhas trilhas
@@ -113,5 +114,13 @@ public class TutorController {
     public Page<ItemRankingDto> buscarRanking(Pageable pageable){
         return facade.buscarRanking(pageable);
     }
+    @GetMapping("/recompensas")
+    public Page<RecompensaDto> buscarRecompensas(Pageable pageable){
+        return facade.buscarRecompensas(pageable);
+    }
 
+    @GetMapping("/meus-dados")
+    public TutorDto buscarMeusDados(){
+        return facade.buscarMeusDados();
+    }
 }

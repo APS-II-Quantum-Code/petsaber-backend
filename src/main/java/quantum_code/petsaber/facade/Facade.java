@@ -11,6 +11,7 @@ import quantum_code.petsaber.dto.PorteResponseDto;
 import quantum_code.petsaber.dto.ProgressoExercicioDto;
 import quantum_code.petsaber.domain.*;
 import quantum_code.petsaber.dto.*;
+import quantum_code.petsaber.enuns.Nivel;
 import quantum_code.petsaber.mapper.*;
 import quantum_code.petsaber.service.*;
 
@@ -38,6 +39,7 @@ public class Facade {
     private final ProgressoModuloService progressoModuloService;
     private final ProgressoExercicioService progressoExercicioService;
     private final EspecieService especieService;
+    private final RecompensaService recompensaService;
 
     private final ExericicioMapper exericicioMapper;
     private final AlternativaMapper alternativaMapper;
@@ -49,6 +51,8 @@ public class Facade {
     private final RacaMapper racaMapper;
     private final PorteMapper porteMapper;
     private final PetMapper petMapper;
+    private final RecompensaMapper recompensaMapper;
+    private final TutorMapper tutorMapper;
 
     private final AuthContext authContext;
 
@@ -197,7 +201,6 @@ public class Facade {
         //Modulos Concluidos
 
 
-
         return progressoTrilha.map(progressoTrilhaMapper::toDto);
     }
 
@@ -326,10 +329,10 @@ public class Facade {
     }
 
     @Transactional(readOnly = true)
-    public Page<TrilhaResponseDto> buscarTodasAsTrilhas(Pageable pageable) {
+    public Page<TrilhaResponseDto> buscarTodasAsTrilhas(Pageable pageable, Long idRaca, Nivel nivel) {
 
         Long idTutor = authContext.getId();
-        return trilhaService.buscarTrilhas(pageable, idTutor).map(trilhaMapper::toDto);
+        return trilhaService.buscarTrilhas(pageable, idTutor, idRaca, nivel).map(trilhaMapper::toDto);
     }
 
     @Transactional(readOnly = true)
@@ -352,5 +355,17 @@ public class Facade {
 
             return itemRankingDto;
         });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RecompensaDto> buscarRecompensas(Pageable pageable) {
+        return recompensaService.buscarRecompensas(pageable)
+                .map(recompensaMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public TutorDto buscarMeusDados() {
+        Long idTutor = authContext.getId();
+        return tutorMapper.toDto(tutorService.buscarTutorPorId(idTutor));
     }
 }
