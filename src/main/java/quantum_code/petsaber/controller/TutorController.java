@@ -123,4 +123,14 @@ public class TutorController {
     public TutorDto buscarMeusDados(){
         return facade.buscarMeusDados();
     }
+
+    @PutMapping("/atualizar-perfil")
+    public void atualizarPerfil(@RequestBody TutorDto tutorDto){
+        facade.atualizarPerfil(tutorDto);
+    }
+
+    @PutMapping("/atualizar-senha")
+    public void atualizarSenha(@RequestBody SenhaTutorDto senhaTutorDto){
+        facade.atualizarSenha(senhaTutorDto);
+    }
 }

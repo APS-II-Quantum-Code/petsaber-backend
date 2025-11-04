@@ -23,6 +23,6 @@ public interface ProgressoExercicioRepository extends JpaRepository<ProgressoExe
     @Query("SELECT new quantum_code.petsaber.dto.ItemRankingDto(p.progressoModulo.progressoTrilha.tutor.idTutor, p.progressoModulo.progressoTrilha.tutor.nome, SUM(p.pontosObtidos), false)  " +
             "FROM ProgressoExercicio p " +
             "GROUP BY p.progressoModulo.progressoTrilha.tutor " +
-            "ORDER BY SUM(p.pontosObtidos)")
+            "ORDER BY SUM(p.pontosObtidos) DESC")
     Page<ItemRankingDto> buscarRanking(Pageable pageable);
 }

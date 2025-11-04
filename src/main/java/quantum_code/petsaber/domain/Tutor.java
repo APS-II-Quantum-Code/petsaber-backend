@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import quantum_code.petsaber.enuns.Role;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "TB_TUTOR")
 @Data
@@ -22,6 +24,11 @@ public class Tutor implements Usuario {
     private String cpf;
     private String email;
     private String senha;
+    private String telefone;
+    private LocalDate dataNascimento;
+    private String genero;
+    private String nacionalidade;
+
 
     @Override
     public Long getId() {

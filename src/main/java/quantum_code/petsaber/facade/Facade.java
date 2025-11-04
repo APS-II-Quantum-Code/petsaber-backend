@@ -368,4 +368,16 @@ public class Facade {
         Long idTutor = authContext.getId();
         return tutorMapper.toDto(tutorService.buscarTutorPorId(idTutor));
     }
+
+    @Transactional
+    public void atualizarPerfil(TutorDto tutorDto) {
+        Long idTutor = authContext.getId();
+        tutorService.atualizarPerfil(idTutor, tutorDto);
+    }
+
+    @Transactional
+    public void atualizarSenha(SenhaTutorDto senhaTutorDto) {
+        Long idTutor = authContext.getId();
+        tutorService.atualizarSenha(idTutor, senhaTutorDto);
+    }
 }
