@@ -133,4 +133,14 @@ public class TutorController {
     public void atualizarSenha(@RequestBody SenhaTutorDto senhaTutorDto){
         facade.atualizarSenha(senhaTutorDto);
     }
+
+    @PostMapping("/resgatar-recompensa/{idRecompensa}")
+    public void resgatarRecompensa(@PathVariable Long idRecompensa){
+        facade.resgatarRecompensa(idRecompensa);
+    }
+
+    @GetMapping("/minhas-recompensas")
+    public Page<RecompensaDto> buscarMinhasRecompensas(Pageable pageable){
+        return facade.buscarMinhasRecompensas(pageable);
+    }
 }

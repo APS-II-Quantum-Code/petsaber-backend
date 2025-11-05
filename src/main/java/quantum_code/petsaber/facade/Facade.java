@@ -40,6 +40,7 @@ public class Facade {
     private final ProgressoExercicioService progressoExercicioService;
     private final EspecieService especieService;
     private final RecompensaService recompensaService;
+    private final RecompensaTutorService recompensaTutorService;
 
     private final ExericicioMapper exericicioMapper;
     private final AlternativaMapper alternativaMapper;
@@ -359,7 +360,8 @@ public class Facade {
 
     @Transactional(readOnly = true)
     public Page<RecompensaDto> buscarRecompensas(Pageable pageable) {
-        return recompensaService.buscarRecompensas(pageable)
+        Long idTutor = authContext.getId();
+        return recompensaService.buscarRecompensas(pageable, idTutor)
                 .map(recompensaMapper::toDto);
     }
 
@@ -379,5 +381,25 @@ public class Facade {
     public void atualizarSenha(SenhaTutorDto senhaTutorDto) {
         Long idTutor = authContext.getId();
         tutorService.atualizarSenha(idTutor, senhaTutorDto);
+    }
+
+    @Transactional
+    public void resgatarRecompensa(Long idRecompensa) {
+
+        Long idTutor = authContext.getId();
+        Tutor tutor =  tutorService.buscarTutorPorId(idTutor);
+        Recompensa recompensa = recompensaService.buscarRecompensaPorId(idRecompensa);
+
+        if(progressoExercicioService.buscarPontuacao(idTutor) >= recompensa.getPontuacaoMinima()){
+            recompensaTutorService.resgatarRecompensa(recompensa, tutor);
+        }
+
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RecompensaDto> buscarMinhasRecompensas(Pageable pageable) {
+        Long idTutor = authContext.getId();
+
+        return recompensaService.buscarRecompensasPorIdTutor(idTutor, pageable).map(recompensaMapper::toDto);
     }
 }
