@@ -31,4 +31,6 @@ public class Trilha {
 
     @OneToMany(mappedBy = "trilha")
     private List<Modulo> modulos;
+
+    private boolean ativo;
 }

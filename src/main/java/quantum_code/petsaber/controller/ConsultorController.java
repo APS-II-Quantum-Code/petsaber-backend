@@ -21,6 +21,36 @@ public class ConsultorController {
         return facade.buscarTrilhas();
     }
 
+    @GetMapping("/trilhas/{idTrilha}")
+    public TrilhaResponseDto buscarTrilhaPorId(@PathVariable Long idTrilha){
+        return facade.buscarTrilhaPorId(idTrilha);
+    }
+
+    @PostMapping("/trilhas")
+    public void adicionarTrilha(@RequestBody TrilhaRequestDto trilhaRequestDto){
+        facade.adicionarTrilha(trilhaRequestDto);
+    }
+
+    @PutMapping("/trilhas/{idTrilha}")
+    public void editarTrilha(@PathVariable Long idTrilha, @RequestBody TrilhaRequestDto trilhaRequestDto){
+        facade.editarTrilha(idTrilha, trilhaRequestDto);
+    }
+
+    @DeleteMapping("/trilhas/{idTrilha}")
+    public void removerTrilha(@PathVariable Long idTrilha){
+        facade.deletarTrilha(idTrilha);
+    }
+
+    @GetMapping("/especies")
+    public List<EspecieResponseDto> buscarEspecies() {
+        return facade.buscarEspecies();
+    }
+
+    @GetMapping("/especies/{idEspecie}/racas")
+    public List<RacaResponseDto> buscarRacas(@PathVariable Long idEspecie) {
+        return facade.buscarRacas(idEspecie);
+    }
+
     @GetMapping("/trilhas/{idTrilha}/modulos")
     public List<ModuloResponseDto> buscarModulosPorIdTrilha(@PathVariable Long idTrilha){
         return facade.buscarModulosPorTrilha(idTrilha);

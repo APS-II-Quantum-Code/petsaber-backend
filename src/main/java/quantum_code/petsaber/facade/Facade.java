@@ -387,10 +387,10 @@ public class Facade {
     public void resgatarRecompensa(Long idRecompensa) {
 
         Long idTutor = authContext.getId();
-        Tutor tutor =  tutorService.buscarTutorPorId(idTutor);
+        Tutor tutor = tutorService.buscarTutorPorId(idTutor);
         Recompensa recompensa = recompensaService.buscarRecompensaPorId(idRecompensa);
 
-        if(progressoExercicioService.buscarPontuacao(idTutor) >= recompensa.getPontuacaoMinima()){
+        if (progressoExercicioService.buscarPontuacao(idTutor) >= recompensa.getPontuacaoMinima()) {
             recompensaTutorService.resgatarRecompensa(recompensa, tutor);
         }
 
@@ -401,5 +401,26 @@ public class Facade {
         Long idTutor = authContext.getId();
 
         return recompensaService.buscarRecompensasPorIdTutor(idTutor, pageable).map(recompensaMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public TrilhaResponseDto buscarTrilhaPorId(Long idTrilha) {
+        return trilhaMapper.toDto(trilhaService.buscarTrilhaPorId(idTrilha));
+    }
+
+    @Transactional
+    public void editarTrilha(Long idTrilha, TrilhaRequestDto trilhaRequestDto) {
+        Raca raca = racaService.buscarRacaPorId(trilhaRequestDto.getIdRaca());
+        trilhaService.editarTrilha(idTrilha, trilhaRequestDto, raca);
+    }
+
+    @Transactional
+    public void adicionarTrilha(TrilhaRequestDto trilhaRequestDto) {
+        Raca raca = racaService.buscarRacaPorId(trilhaRequestDto.getIdRaca());
+        trilhaService.criarTrilha(trilhaRequestDto, raca);
+    }
+
+    public void deletarTrilha(Long idTrilha) {
+        trilhaService.deletarTrilha(idTrilha);
     }
 }

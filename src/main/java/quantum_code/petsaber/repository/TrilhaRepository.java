@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import quantum_code.petsaber.domain.Trilha;
 import quantum_code.petsaber.enuns.Nivel;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TrilhaRepository extends JpaRepository<Trilha, Long> {
@@ -17,6 +18,11 @@ public interface TrilhaRepository extends JpaRepository<Trilha, Long> {
     @Query("SELECT t FROM Trilha t " +
             "WHERE t.idTrilha NOT IN (SELECT pt.trilha.idTrilha FROM ProgressoTrilha pt WHERE pt.tutor.idTutor = :idTutor) " +
             "AND (:idRaca IS NULL OR t.raca.idRaca = :idRaca) " +
-            "AND (:nivel IS NULL OR t.nivel = :nivel)")
+            "AND (:nivel IS NULL OR t.nivel = :nivel) " +
+            "AND t.ativo = true")
     Page<Trilha> buscarTodasTrilhasDisponiveis(Pageable pageable, Long idTutor, Long idRaca, Nivel nivel);
+
+    @Query("SELECT t FROM Trilha t " +
+            "WHERE t.ativo = true")
+    List<Trilha> buscarTrilhas();
 }
