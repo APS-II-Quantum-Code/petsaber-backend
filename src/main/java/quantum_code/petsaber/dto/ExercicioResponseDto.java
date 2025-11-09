@@ -12,6 +12,7 @@ public class ExercicioResponseDto {
     private Long idExercicio;
     private String nome;
     private String descricao;
+    private Double pontuacao;
     private List<AlternativaResponseDto> alternativas;
 
 }

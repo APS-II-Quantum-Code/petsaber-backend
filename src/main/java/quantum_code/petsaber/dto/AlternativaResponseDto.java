@@ -9,4 +9,5 @@ public class AlternativaResponseDto {
 
     private Long idAlternativa;
     private String conteudo;
+    private Boolean correta;
 }

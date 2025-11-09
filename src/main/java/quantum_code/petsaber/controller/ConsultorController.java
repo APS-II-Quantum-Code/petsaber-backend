@@ -91,5 +91,31 @@ public class ConsultorController {
         return facade.criarExercicio(idModulo, exercicioRequestDto);
     }
 
+    @GetMapping("/exercicio/{idExercicio}/alternativas")
+    public List<AlternativaResponseDto> buscarAlternativasPorExercicioId(@PathVariable Long idExercicio){
+        return facade.buscarAlternativasPorExercicioId(idExercicio);
+    }
+
+    @PostMapping("/exercicio/{idExercicio}/alternativa")
+    public void criarAlternativa(@PathVariable Long idExercicio, @RequestBody AlternativaRequestDto alternativaRequestDto){
+        facade.criarAlternativa(idExercicio, alternativaRequestDto);
+    }
+
+    @PutMapping("/exericio/{idExercicio}")
+    public void editarExercicio(@PathVariable Long idExercicio, @RequestBody ExercicioRequestDto exercicioRequestDto){
+        facade.editarExercicio(idExercicio, exercicioRequestDto);
+    }
+
+    @PutMapping("/alternativa/{idAlternativa}")
+    public void editarAlternativa(@PathVariable Long idAlternativa, @RequestBody AlternativaRequestDto alternativaRequestDto){
+        facade.editarAlternativa(idAlternativa, alternativaRequestDto);
+    }
+
+    @DeleteMapping("/alternativa/{idAlternativa}")
+    public void removerAlternativa(@PathVariable Long idAlternativa){
+        facade.removerAlternativa(idAlternativa);
+    }
+
+
 
 }

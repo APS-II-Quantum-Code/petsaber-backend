@@ -3,6 +3,7 @@ package quantum_code.petsaber.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import quantum_code.petsaber.domain.Exercicio;
+import quantum_code.petsaber.dto.ExercicioRequestDto;
 import quantum_code.petsaber.repository.ExercicioRepository;
 
 import java.util.List;
@@ -24,5 +25,15 @@ public class ExercicioService {
     public Exercicio buscarExercicioPorId(Long idExercicio) {
         return exercicioRepository.findById(idExercicio)
                 .orElseThrow(() -> new RuntimeException("Exercicio não encontrado"));
+    }
+
+    public void editarExercicio(Long idExercicio, ExercicioRequestDto exercicioRequestDto) {
+        Exercicio exercicio = buscarExercicioPorId(idExercicio);
+
+        exercicio.setNome(exercicioRequestDto.getNome());
+        exercicio.setDescricao(exercicioRequestDto.getDescricao());
+        exercicio.setPontuacao(exercicioRequestDto.getPontuacao());
+
+        exercicioRepository.save(exercicio);
     }
 }

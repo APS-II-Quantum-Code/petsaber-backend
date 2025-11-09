@@ -15,6 +15,7 @@ public interface ExericicioMapper {
 
     Exercicio toEntity(ExercicioRequestDto exercicioRequestDto);
 
+    @Mapping(source = "pontuacao", target = "pontuacao")
     ExercicioResponseDto toDto(Exercicio exercicio);
 
     List<ExercicioResponseDto> toDto(List<Exercicio> exercicios);

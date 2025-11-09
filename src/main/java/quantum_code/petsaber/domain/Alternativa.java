@@ -17,6 +17,7 @@ public class Alternativa {
     private Long idAlternativa;
     private String conteudo;
     private Boolean correta;
+    private Boolean ativa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_EXERCICIO")

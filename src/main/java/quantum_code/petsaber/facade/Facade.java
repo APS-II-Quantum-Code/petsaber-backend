@@ -125,6 +125,7 @@ public class Facade {
         trilha.setRaca(racaService.buscarRacaPorId(trilhaRequestDto.getIdRaca()));
         trilha.setHorasTotais(0);
         trilha.setModulosTotais(0);
+        trilha.setAtivo(true);
 
         return trilhaMapper.toDto(trilhaService.salvarTrilha(trilha));
     }
@@ -133,11 +134,11 @@ public class Facade {
     public ModuloResponseDto criarNovoModulo(Long idTrilha, ModuloRequestDto moduloRequestDto) {
 
         Modulo modulo = moduloMapper.toEntity(moduloRequestDto);
+        modulo.setAtivo(true);
 
         Trilha trilha = trilhaService.buscarTrilhaPorId(idTrilha);
         trilha.setModulosTotais(trilha.getModulosTotais() + 1);
         trilha.setHorasTotais(trilha.getHorasTotais() + moduloRequestDto.getDuracaoHoras());
-        trilha.setAtivo(true);
         trilhaService.salvarTrilha(trilha);
 
         modulo.setTrilha(trilha);
@@ -151,11 +152,6 @@ public class Facade {
         Exercicio exercicio = exericicioMapper.toEntity(exercicioRequestDto);
         exercicio.setModulo(moduloService.buscarModuloPorId(idModulo));
         exercicioService.criarExercicio(exercicio);
-
-        exercicio.getAlternativas().forEach(alternativa -> {
-            alternativa.setExercicio(exercicio);
-            alternativaService.salvarAlternativa(alternativa);
-        });
 
         return exericicioMapper.toDto(exercicio);
     }
@@ -432,5 +428,28 @@ public class Facade {
 
     public void removerModulo(Long idModulo) {
         moduloService.deletarModulo(idModulo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlternativaResponseDto> buscarAlternativasPorExercicioId(Long idExercicio) {
+        return alternativaMapper.toDto(alternativaService.buscarAlternativasPorExercicioId(idExercicio));
+    }
+
+    public void editarExercicio(Long idExercicio, ExercicioRequestDto exercicioRequestDto) {
+        exercicioService.editarExercicio(idExercicio, exercicioRequestDto);
+    }
+
+    public void editarAlternativa(Long idAlternativa, AlternativaRequestDto alternativaRequestDto) {
+        alternativaService.editarAlternativa(idAlternativa, alternativaRequestDto);
+    }
+
+    public void removerAlternativa(Long idAlternativa) {
+        alternativaService.deletarAlternativa(idAlternativa);
+    }
+
+    public void criarAlternativa(Long idExercicio, AlternativaRequestDto alternativaRequestDto) {
+        Exercicio exercicio = exercicioService.buscarExercicioPorId(idExercicio);
+
+        alternativaService.criarAlternativa(exercicio, alternativaRequestDto);
     }
 }
