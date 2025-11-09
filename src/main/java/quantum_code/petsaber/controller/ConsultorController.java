@@ -56,6 +56,11 @@ public class ConsultorController {
         return facade.buscarModulosPorTrilha(idTrilha);
     }
 
+    @GetMapping("/modulos/{idModulo}")
+    public ModuloResponseDto buscarModuloPorId(@PathVariable Long idModulo){
+        return facade.buscarModuloPorId(idModulo);
+    }
+
     @GetMapping("/modulos/{idModulo}/exercicios")
     public List<ExercicioResponseDto> buscarExerciciosPorIdModulo(@PathVariable Long idModulo){
         return facade.buscarExerciciosPorIdModulo(idModulo);
