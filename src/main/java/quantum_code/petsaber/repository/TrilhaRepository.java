@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface TrilhaRepository extends JpaRepository<Trilha, Long> {
 
-    @Query("SELECT t FROM Trilha t JOIN FETCH t.modulos m WHERE m.idModulo = :idModulo")
+    @Query("SELECT t FROM Trilha t JOIN FETCH t.modulos m WHERE m.idModulo = :idModulo AND m.ativo = true")
     Optional<Trilha> buscarTrilhaPorModuloId(Long idModulo);
 
     @Query("SELECT t FROM Trilha t " +
@@ -25,4 +25,9 @@ public interface TrilhaRepository extends JpaRepository<Trilha, Long> {
     @Query("SELECT t FROM Trilha t " +
             "WHERE t.ativo = true")
     List<Trilha> buscarTrilhas();
+
+    @Query("SELECT t FROM Trilha t " +
+            "WHERE t.idTrilha = :idTrilha " +
+            "AND t.ativo = true ")
+    Optional<Trilha> buscarTrilhaPorId(Long idTrilha);
 }

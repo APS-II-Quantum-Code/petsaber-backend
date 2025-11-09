@@ -137,6 +137,7 @@ public class Facade {
         Trilha trilha = trilhaService.buscarTrilhaPorId(idTrilha);
         trilha.setModulosTotais(trilha.getModulosTotais() + 1);
         trilha.setHorasTotais(trilha.getHorasTotais() + moduloRequestDto.getDuracaoHoras());
+        trilha.setAtivo(true);
         trilhaService.salvarTrilha(trilha);
 
         modulo.setTrilha(trilha);
@@ -422,5 +423,14 @@ public class Facade {
 
     public void deletarTrilha(Long idTrilha) {
         trilhaService.deletarTrilha(idTrilha);
+    }
+
+    @Transactional
+    public void editarModulo(Long idModulo, ModuloRequestDto moduloRequestDto) {
+        moduloService.editarModulo(idModulo, moduloRequestDto);
+    }
+
+    public void removerModulo(Long idModulo) {
+        moduloService.deletarModulo(idModulo);
     }
 }

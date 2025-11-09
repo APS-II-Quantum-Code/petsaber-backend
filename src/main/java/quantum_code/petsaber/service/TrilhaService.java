@@ -24,7 +24,7 @@ public class TrilhaService {
     }
 
     public Trilha buscarTrilhaPorId(Long idTrilha) {
-        return trilhaRepository.findById(idTrilha).orElseThrow(() -> new RuntimeException("Erro ao buscar trilha"));
+        return trilhaRepository.buscarTrilhaPorId(idTrilha).orElseThrow(() -> new RuntimeException("Erro ao buscar trilha"));
     }
 
     public List<Trilha> buscarTrilhas() {

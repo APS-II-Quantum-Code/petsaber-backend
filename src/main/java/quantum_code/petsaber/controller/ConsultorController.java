@@ -61,6 +61,16 @@ public class ConsultorController {
         return facade.buscarModuloPorId(idModulo);
     }
 
+    @PutMapping("/modulos/{idModulo}")
+    public void editarModulo(@PathVariable Long idModulo, @RequestBody ModuloRequestDto moduloRequestDto){
+        facade.editarModulo(idModulo, moduloRequestDto);
+    }
+
+    @DeleteMapping("/modulos/{idModulo}")
+    public void removerModulo(@PathVariable Long idModulo){
+        facade.removerModulo(idModulo);
+    }
+
     @GetMapping("/modulos/{idModulo}/exercicios")
     public List<ExercicioResponseDto> buscarExerciciosPorIdModulo(@PathVariable Long idModulo){
         return facade.buscarExerciciosPorIdModulo(idModulo);

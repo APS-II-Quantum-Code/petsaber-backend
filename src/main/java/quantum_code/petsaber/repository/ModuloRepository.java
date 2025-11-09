@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ModuloRepository extends JpaRepository<Modulo, Long> {
 
-    @Query("SELECT m FROM Modulo m WHERE m.trilha.idTrilha = :idTrilha")
+    @Query("SELECT m FROM Modulo m WHERE m.trilha.idTrilha = :idTrilha AND m.ativo = true")
     List<Modulo> findByIdTrilha(Long idTrilha);
 }
